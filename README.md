@@ -7,6 +7,9 @@
 * JavaScript ES6 樣板字面值渲染資訊
 * JavaScript 監聽'選擇行政區'事件，更新資訊
 * JavaScript 監聽'頁面切換'與'web history'操控，更新資訊
-
+---
+## 範例圖片
+### 範例圖片 1
 ![範例圖片 1](images/Demo1.png)
+### 範例圖片 2
 ![範例圖片 2](images/Demo2.png)
