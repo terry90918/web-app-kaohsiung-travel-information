@@ -1,6 +1,4 @@
-# Kaohsiung-Travel-Information
-
-## 高雄旅遊資訊 查詢網站
+# 高雄旅遊資訊 查詢網站
 * CSS Flex 屬性運用
 * JavaScript Ajax 取得高雄市政府資料開放平台的 Open Data
 * JavaScript ES6 樣板字面值渲染資訊
