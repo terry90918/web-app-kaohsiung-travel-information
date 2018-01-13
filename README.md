@@ -172,7 +172,7 @@ document.querySelector('.example').addEventListener('click', function(e) {
 * `e.target.nodeName`
 * `e.target.textContent`
 * `e.target.className`
-* ``
+* `e.path`
 
 ---
 
