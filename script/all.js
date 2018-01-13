@@ -218,15 +218,14 @@ function pageChange(e) {
   let goPage;
   if (textContent !== 'Prev' && textContent !== 'Next') {
     goPage = parseInt(textContent);
-    renderContent(type, goPage);
   } else {
     if (textContent === 'Prev') {
       goPage = page - 1;
     } else {
       goPage = page + 1;
     }
-    renderContent(type, goPage);
   }
+  renderContent(type, goPage);
 }
 
 // 網址參數拆解
@@ -300,7 +299,7 @@ function cradrModelAddEventListenClick(e) {
   }, false);
 }
 
-// 渲染彈出視窗
+// 渲染彈出視窗 > 關閉彈出視窗監聽
 function renderModal(cardModelId, px, py) {
   for (let i = 0; i < nowData.length; i++) {
     if (nowData[i].Id === cardModelId) {
@@ -327,7 +326,7 @@ function renderModal(cardModelId, px, py) {
       modalEl.classList.add('show');
 
       let modalBtnClose = document.querySelector('.modal-btn-close');
-      modalBtnClose.addEventListener('click', function(){
+      modalBtnClose.addEventListener('click', function () {
         modalEl.classList.remove('show').add('hide');
       }, false);
 
@@ -347,10 +346,11 @@ function initMap(px, py, name) {
 
   let map = document.createElement("div");
   map.setAttribute('id', 'map');
-  
+
   let googleMap = document.querySelector('#googleMap');
   googleMap.appendChild(map);
 
+  // 設定 center 軸心與 zoom 遠近縮距
   map = new google.maps.Map(map, {
     zoom: 12,
     center: centerXY
@@ -387,5 +387,3 @@ btnGoTop.addEventListener('click', goTop, false);
 window.addEventListener('popstate', function (e) {
   renderContent(e.state.type, e.state.page, 'isHistoryPopstate');
 }, false);
-
-// 
