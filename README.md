@@ -1,14 +1,15 @@
 # 高雄旅遊景點導覽
 
-![範例圖片 1](images/Demo1.png)
-![範例圖片 2](images/Demo2.png)
-![範例圖片 3](images/Demo3.png)
+![範例圖片 1](https://raw.githubusercontent.com/TpWILovePanda/Kaohsiung-Travel-Information/master/images/Demo1.png)
+![範例圖片 2](https://raw.githubusercontent.com/TpWILovePanda/Kaohsiung-Travel-Information/master/images/Demo2.png)
+![範例圖片 3](https://raw.githubusercontent.com/TpWILovePanda/Kaohsiung-Travel-Information/master/images/Demo3.png)
 
 > 近日重新練習 JavaScript 並做了高雄旅遊景點導覽的網頁，使用高雄政府資料開放平臺的 OPENDATA，紀錄這次使用到的功能及心得。
 
 ---
 
 [Demo Link](https://tpwilovepanda.github.io/Kaohsiung-Travel-Information/index.html)
+
 [GitHub Link](https://github.com/TpWILovePanda/Kaohsiung-Travel-Information)
 
 ---
@@ -25,8 +26,6 @@
 * JavaScript **監聽事件**選擇行政區觸發事件來更新資訊
 * JavaScript **上下頁面切換**與 **Web History API** 操控來更新資訊
 * Google Map Api 實際應用
-
----
 
 ## querySelector & querySelectorAll
 
@@ -56,8 +55,6 @@ var example_class_all = document.querySelectorAll('.example-class-all');
 // 選取 data-* (*: 可替換任何參數) 資料
 var example_data_index = document.querySelector('div[data-index="1"]');
 ```
-
----
 
 ## addEventListener
 
@@ -152,8 +149,6 @@ document.querySelector('.father').addEventListener('click', function() {
 
 點擊 `.child` 觸發事件順序是 `father!` > `child!`，上層向下曾捕捉。
 
----
-
 ## `function(e) { }`
 
 `e` 是 `event` 簡寫， `event` 事件裡面有許多資訊。
@@ -173,8 +168,6 @@ document.querySelector('.example').addEventListener('click', function(e) {
 * `e.target.textContent`
 * `e.target.className`
 * `e.path`
-
----
 
 ## XMLHttpRequest
 
@@ -211,8 +204,6 @@ function requestData() {
 }
 ```
 
----
-
 ## Web APIs > History
 
 此次用到的方法有 `history.pushState(state, title, url);` 與 `popstate`。
@@ -229,8 +220,6 @@ window.addEventListener('popstate', function (e) {
 > * [操控瀏覽器歷史紀錄](https://developer.mozilla.org/zh-TW/docs/Web/API/History)
 > * [History](https://developer.mozilla.org/zh-TW/docs/Web/API/History_API)
 > * [`History.pushState()`](https://developer.mozilla.org/zh-CN/docs/Web/API/History/pushState)
-
----
 
 ## 總結
 
