@@ -1,6 +1,7 @@
 @import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
-
-* { font-family: 'Noto Sans TC', sans-serif; }
+* {
+  font-family: 'Noto Sans TC', sans-serif;
+}
 
 .kaohsiung-travel {
   min-height: 380px;
@@ -34,7 +35,7 @@
   height: 53px;
   margin: 0 auto 0 auto;
   padding: 15px 285px 12px 9.8px;
-  background: rgba(255,255,255,0.70);
+  background: rgba(255, 255, 255, 0.70);
   background-image: url('../images/icons_down.png');
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
@@ -63,9 +64,9 @@
   margin: auto;
   padding: 1rem;
   background: #FFFFFF;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.20);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20);
   border-radius: 5px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 .administrative-hot-title {
@@ -94,12 +95,15 @@
 .administrative-hot-btnsGroup button:nth-child(1) {
   background: #8A82CC;
 }
+
 .administrative-hot-btnsGroup button:nth-child(2) {
   background: #FFA782;
 }
+
 .administrative-hot-btnsGroup button:nth-child(3) {
   background: #F5D005;
 }
+
 .administrative-hot-btnsGroup button:nth-child(4) {
   background: #559AC8;
 }
@@ -148,16 +152,15 @@
   /* width: 464px; */
   width: calc(94% / 2);
   /* height: 273px; */
-  
   border-radius: 5px;
   margin-bottom: 36px;
-  box-shadow: 1px 1px 4px 2px rgba(0,0,0,0.20);
+  box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, 0.20);
   overflow: hidden;
   transition: .2s ease-in;
 }
 
 .model-card:hover {
-  box-shadow: 0 0 1px 1px rgba(0,0,0,0.20);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.20);
 }
 
 .card-top {
@@ -174,7 +177,8 @@
   filter: grayscale(.5);
 }
 
-.card-top h3, h5 {
+.card-top h3,
+.card-top h5 {
   position: absolute;
   bottom: 20px;
   margin: auto;
@@ -182,7 +186,7 @@
 }
 
 .card-top h3 {
-  left: 20px; 
+  left: 20px;
   font-size: 24px;
   line-height: 28px;
 }
@@ -208,21 +212,25 @@
   background-repeat: no-repeat;
   padding-left: 25px;
 }
+
 .card-bottom .location {
   background-image: url('../images/icons_pin.png');
   background-repeat: no-repeat;
   padding-left: 25px;
 }
+
 .card-bottom .phoneTag {
   display: flex;
   justify-content: space-between
 }
+
 .card-bottom .phoneTag .phone {
   min-width: 140px;
   background-image: url('../images/icons_phone.png');
   background-repeat: no-repeat;
   padding-left: 25px;
 }
+
 .card-bottom .phoneTag .tag {
   background-image: url('../images/icons_tag.png');
   background-repeat: no-repeat;
@@ -249,21 +257,25 @@
   cursor: pointer;
   padding: 5px;
 }
+
 .pagination li:first-child,
 .pagination li:last-child {
   width: 40px;
-  height: 26px; 
+  height: 26px;
 }
+
 .pagination li:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+
 .pagination li:first-child {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 
-.pagination li:hover, .pagination li.active {
+.pagination li:hover,
+.pagination li.active {
   color: #fff;
   background: #559AC8;
 }
@@ -308,6 +320,102 @@
   padding-bottom: 40px;
 }
 
+.modal-el {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(70, 70, 70, 0.5);
+}
+
+.modal-el.hide {
+  display: none;
+}
+
+.modal-el.show {
+  display: block;
+}
+
+.modal-el .modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 600px;
+  height: 600px;
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-el .modal-header {
+  position: relative;
+  width: 100%;
+  height: 20%;
+  background-size: cover;
+  background-position: center;
+}
+
+.modal-el .modal-header h3 {
+  position: absolute;
+  bottom: 0;
+  margin: 0 0 10px 0;
+  padding: 11px;
+  color: white;
+  font-size: 26px;
+  background-color: #7f7f7f61;
+}
+
+.modal-el .modal-body {
+  width: 100%;
+  height: 70%;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.modal-el .modal-body p {
+  text-indent: 2em;
+  line-height: 1.4rem;
+  letter-spacing: .1rem;
+}
+
+.modal-el #googleMap #map {
+  width: 100%;
+  height: 300px;
+}
+
+.modal-el .modal-footer {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  width: 100%;
+  height: 10%;
+  background-color: #e7e7e7;
+  box-sizing: border-box;
+}
+
+.modal-el .modal-footer .modal-btn-close {
+  flex: 1 1 auto;
+  padding: 5px;
+  color: white;
+  background-color: #607D8B;
+  border-radius: 10px;
+}
+
+.modal-el .modal-footer h5 {
+  flex: 3 1 auto;
+  margin: 0;
+  padding-right: 20px;
+  text-align: right;
+}
+
 @media screen and (max-width: 768px) {
   .administrative-select {
     width: 80%;
@@ -322,5 +430,8 @@
     width: 80%;
     margin: auto;
     margin-bottom: 10%;
+  }
+  .modal-el .modal {
+    width: 97vw;
   }
 }

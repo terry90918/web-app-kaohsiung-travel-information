@@ -1,6 +1,5 @@
-// 請求網址
+// 請求資料的網址
 var urlForAjax = 'https://data.kcg.gov.tw/api/action/datastore_search?resource_id=92290ee5-6e61-456f-80c0-249eae2fcc97';
-// var urlForAjax = '/script/data.json';
 // 全部資料
 var records = [];
 // 選擇區域資料
@@ -14,27 +13,43 @@ var type;
 // 現在分頁
 var page;
 
-// 請求資料
+/**
+ * 高雄市政府開放資料
+ * 透過 AJAX 取得 JSON 資料
+ */
 function requestData() {
-  var xhr = new XMLHttpRequest();
+  // 建立一個新的 XMLHttpRequest
+  let xhr = new XMLHttpRequest();
+  // 設定 xhr 來 get(取得) 放在 高雄市政府開放資料的 JSON 資料值
   xhr.open('get', urlForAjax, true);
+  // 送出 xhr 請求
   xhr.send(null);
-  xhr.onload = function() {
-    if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
-        var openData = JSON.parse(xhr.responseText);
-        records = openData.result.records;
-        // 分析網址參數, 帶入渲染函示
-        var urlParamsObj = (urlParams() ? urlParams() : {type: '', page: ''});
-        renderContent(urlParamsObj.type, urlParamsObj.page);
-      } else {
-        console.log("資料錯誤!");
-      }
+  // 當取得 xhr 回應, 執行此 function
+  xhr.onload = function () {
+    // 4: 請求已完成, 響應已就緒. 200: "OK"
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      let openData = JSON.parse(xhr.responseText);
+      records = openData.result.records;
+      // 分析網址參數, 帶入渲染函式
+      let urlParamsObj = (urlParams() ? urlParams() : {
+        type: '',
+        page: ''
+      });
+      renderContent(urlParamsObj.type, urlParamsObj.page);
+    } else {
+      console.log("資料錯誤!");
     }
   }
 }
 
-// 渲染內容
+/**
+ * JSDoc參考資料: https://msdn.microsoft.com/zh-tw/library/mt162307.aspx?f=255&MSPPError=-2147217396
+ * @description 渲染內容 
+ * @param {string} goType 前往的行政區分類
+ * @param {number} goPage 前往的頁籤
+ * @param {string} isHistoryPopstate 是歷史紀錄觸發的事件嗎? 有傳值則"是"
+ */
+
 function renderContent(goType, goPage, isHistoryPopstate) {
   type = goType || 'all';
   page = goPage || 1;
@@ -47,9 +62,13 @@ function renderContent(goType, goPage, isHistoryPopstate) {
     nowData = typeData;
     len = nowData.length;
   }
+  // 渲染選單
   renderSelect();
-  renderModel();
+  // 渲染卡片模組 > 卡片模組點擊監聽啟動函式
+  renderCardModel();
+  // 渲染分頁標籤
   renderPage();
+  // 如果不是 "返回上一頁", 則執行歷史紀錄更新!
   if (!isHistoryPopstate) {
     historyUpdata();
   }
@@ -57,12 +76,11 @@ function renderContent(goType, goPage, isHistoryPopstate) {
 
 // 渲染下拉選單
 function renderSelect() {
-  var notRepeating = [];
-  var el = document.querySelector('.administrative-select');
-  var option = '<option value="" selected disabled hidden>- - 請選擇行政區 - -</option>';
+  let notRepeating = [];
+  let el = document.querySelector('.administrative-select');
+  let option = '<option value="" selected disabled hidden>- - 請選擇行政區 - -</option>';
 
-  console.log()
-  for (var i = 0; i < records.length; i++) {
+  for (let i = 0; i < records.length; i++) {
     // 1.過濾重複的行政區
     if (notRepeating.indexOf(records[i].Zone) == -1) {
       // 2.整理成陣列
@@ -71,15 +89,15 @@ function renderSelect() {
   }
 
   // 將整理好的陣列渲染到 DOM 上
-  for (var i = 0; i < notRepeating.length; i++) {
+  for (let i = 0; i < notRepeating.length; i++) {
     option += `<option value="${notRepeating[i]}">${notRepeating[i]}</option>`;
   }
   el.innerHTML = option;
 }
 
-// 渲染模組
-function renderModel() {
-  var start, end;
+// 渲染卡片模組 > 卡片模組點擊監聽啟動函式
+function renderCardModel() {
+  let start, end;
 
   if (page == 1) {
     start = 0;
@@ -89,11 +107,11 @@ function renderModel() {
     end = (len < page * 6 ? len : page * 6);
   }
 
-  var el = document.querySelector('.administrative-cards');
-  var cardModel = ``;
-  for (var i = start; i < end; i++) {
+  let el = document.querySelector('.administrative-cards');
+  let cardModel = ``;
+  for (let i = start; i < end; i++) {
     cardModel +=
-    `<div class="model-card">
+      `<div class="model-card" data-id="${nowData[i].Id}" data-px="${nowData[i].Px}" data-py="${nowData[i].Py}">
       <div class="card-top" style="background-image: url('${nowData[i].Picture1}');">
         <h3>${nowData[i].Name}</h3>
         <h5>${nowData[i].Zone}</h5>
@@ -109,28 +127,32 @@ function renderModel() {
     </div>`;
   }
   el.innerHTML = cardModel;
+
+  // 卡片模組點擊監聽啟動函式
+  cradrModelAddEventListenClick();
 }
 
 // 渲染分頁碼
 function renderPage() {
-  var pageLen = Math.floor(nowData.length % 6) === 0 
-    ? (nowData.length / 6) : (Math.floor(nowData.length / 6) === 0 
-      ? 1 :  (Math.floor(nowData.length / 6) + 1));
-  
-  var pagination = document.querySelector('.pagination');
-  var str = ``;
+  // 分析頁籤最大數值
+  let pageLen = Math.floor(nowData.length % 6) === 0 ?
+    (nowData.length / 6) : (Math.floor(nowData.length / 6) === 0 ?
+      1 : (Math.floor(nowData.length / 6) + 1));
+  let pagination = document.querySelector('.pagination');
+  let str = ``;
+  // 字串轉數值
   page = parseInt(page);
   if (page == 1) {
     str += `<li class="disable">Prev</li>`;
   } else {
     str += `<li>Prev</li>`;
   }
-  if (page >= 4) { 
+  if (page >= 4) {
     str += `<li>1</li><li class="disable">...</li>`;
   }
 
-  var start;
-  var end;
+  let start;
+  let end;
   if (pageLen > 3) {
     if (page - 2 < 1) {
       start = 1;
@@ -147,7 +169,7 @@ function renderPage() {
     end = pageLen;
   }
 
-  for (var i = start; i <= end; i ++) {
+  for (let i = start; i <= end; i++) {
     if (i == page) {
       str +=
         `<li class="active">${i}</li>`;
@@ -170,25 +192,30 @@ function renderPage() {
 
 // 選擇行政區時 觸發的事件
 function selectChange(e) {
-  var selectVal = e.target.value;
-  var el = document.querySelector('.administrative-title');
+  let selectVal = e.target.value;
+  let el = document.querySelector('.administrative-title');
   renderContent(selectVal, 1);
 }
 
 // 點擊熱門行政區 
 function hotChose(e) {
-  if (e.target.nodeName !== 'BUTTON') { return; }
-  var hotVal = e.target.textContent;
+  if (e.target.nodeName !== 'BUTTON') {
+    return;
+  }
+  let hotVal = e.target.textContent;
   renderContent(hotVal, 1);
 }
 
 // 頁面切換
 function pageChange(e) {
-  if (e.target.nodeName !== 'LI') { return; }
-  if (e.target.className === 'disable') { return; }
+  if (e.target.nodeName !== 'LI') {
+    return;
+  } else if (e.target.className === 'disable') {
+    return;
+  }
 
-  var textContent = e.target.textContent;
-  var goPage;
+  let textContent = e.target.textContent;
+  let goPage;
   if (textContent !== 'Prev' && textContent !== 'Next') {
     goPage = parseInt(textContent);
     renderContent(type, goPage);
@@ -204,14 +231,15 @@ function pageChange(e) {
 
 // 網址參數拆解
 function urlParams() {
-  var urlSearch = window.location.search;
+  let urlSearch = window.location.search;
   if (urlSearch) {
-    var theRequest = new Object();
+    let theRequest = new Object();
     if (urlSearch.indexOf('?') !== -1) {
-      var param = urlSearch.split('?')[1];
+      let param = urlSearch.split('?')[1];
       if (param.indexOf('&') !== -1) {
-        var params = param.split("&");
-        for (var i = 0; i < params.length; i++) {
+        let params = param.split("&");
+        for (let i = 0; i < params.length; i++) {
+          // 十六進制解碼, 將轉換正確中文
           theRequest[params[i].split('=')[0]] = decodeURI(params[i].split('=')[1]);
         }
       } else {
@@ -222,7 +250,7 @@ function urlParams() {
   } else {
     console.log('網址後面沒有參數!');
   }
-} 
+}
 
 // 下拉捲軸返回頂端
 function goTop() {
@@ -231,24 +259,109 @@ function goTop() {
 
 // 修改網址與新增歷史紀錄
 function historyUpdata(e) {
-  var typeEncodeURI = encodeURI(type);
-  var state = { 'type':  typeEncodeURI, 'page': page };
-  var title = 'null';
-  var url = '?type=' + state.type + '&page=' + state.page;
+  // 需要先將中文進行十六進制的轉義序列進行替換
+  let typeEncodeURI = encodeURI(type);
+  let state = {
+    'type': typeEncodeURI,
+    'page': page
+  };
+  // 參考資源: https://developer.mozilla.org/zh-TW/docs/Web/API/History_API#pushState()_%E6%96%B9%E6%B3%95
+  let title = 'null';
+  let url = '?type=' + state.type + '&page=' + state.page;
   history.pushState(state, title, url);
 }
 
 // 更新選擇區域資料
 function upNowData(goType) {
-  var el = document.querySelector('.administrative-title');
+  let el = document.querySelector('.administrative-title');
   typeData = [];
 
   el.textContent = goType;
-  for (var i = 0; i < records.length; i++) {
+  for (let i = 0; i < records.length; i++) {
     if (records[i].Zone == goType) {
       typeData.push(records[i]);
     }
   }
+}
+
+
+// 點擊卡片模組顯示 Google Map 監聽
+// 必須等卡片模組渲染完畢在進行監聽卡片模組點擊事件
+function cradrModelAddEventListenClick(e) {
+  let administrativeCards = document.querySelector('.administrative-cards');
+  administrativeCards.addEventListener('click', function (e) {
+    for (let i = 0; i < e.path.length; i++) {
+      let elementClassName = e.path[i].className;
+      if (elementClassName === "model-card") {
+        let cardModel = e.path[i];
+        renderModal(cardModel.dataset.id);
+      }
+    }
+  }, false);
+}
+
+// 渲染彈出視窗
+function renderModal(cardModelId, px, py) {
+  for (let i = 0; i < nowData.length; i++) {
+    if (nowData[i].Id === cardModelId) {
+      let modalContent =
+        `<div class="modal-header" style="background-image: url('${nowData[i].Picture1}');">
+          <h3>${nowData[i].Name}</h3>
+        </div>
+        <div class="modal-body">
+          <h4>簡介</h4>
+          <p>${nowData[i].Description}</p>
+          <hr>
+          <h4>Google Map</h4>
+          <div id="googleMap"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn-close">關閉</button>
+          <h5>上一次更新時間：${nowData[i].Changetime}</h5>
+        </div>`;
+
+      let modal = document.querySelector('.modal');
+      modal.innerHTML = modalContent;
+
+      let modalEl = document.querySelector('.modal-el');
+      modalEl.classList.add('show');
+
+      let modalBtnClose = document.querySelector('.modal-btn-close');
+      modalBtnClose.addEventListener('click', function(){
+        modalEl.classList.remove('show').add('hide');
+      }, false);
+
+      // 顯示 Google Map
+      initMap(nowData[i].Px, nowData[i].Py, nowData[i].Name);
+    }
+  }
+}
+
+/* --  Google Map -- */
+// 初始化 google map
+function initMap(px, py, name) {
+  let centerXY = {
+    lat: parseFloat(py),
+    lng: parseFloat(px)
+  }
+
+  let map = document.createElement("div");
+  map.setAttribute('id', 'map');
+  
+  let googleMap = document.querySelector('#googleMap');
+  googleMap.appendChild(map);
+
+  map = new google.maps.Map(map, {
+    zoom: 12,
+    center: centerXY
+  });
+
+  // 標記座標
+  let marker = new google.maps.Marker({
+    position: centerXY,
+    title: name,
+    map: map,
+  });
 }
 
 // 請求資料
@@ -270,7 +383,9 @@ pagination.addEventListener('click', pageChange, false);
 var btnGoTop = document.querySelector('.btn-goTop');
 btnGoTop.addEventListener('click', goTop, false);
 
-// 上下頁切換監聽
-window.addEventListener('popstate', function(e) {
+// 瀏覽器上一頁與下一頁切換監聽
+window.addEventListener('popstate', function (e) {
   renderContent(e.state.type, e.state.page, 'isHistoryPopstate');
 }, false);
+
+// 
